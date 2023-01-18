@@ -5,6 +5,7 @@ class Object
 {
 	//Abstracted root class for uuhhha lll
 public:
+	sf::Vector2f Position;
 	float mass;
 	void init();
 	Object();

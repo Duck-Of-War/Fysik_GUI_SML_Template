@@ -4,9 +4,10 @@
 #include "Object.h"
 #include <math.h>
 #include <cmath>
+#include "StaticCircle.h"
 
 //To do:
-// Make a very barren "root" object class
+// FIX RENDER FOR STATIC CIRCLE
 // make into physics object class and splinter into circle and square???
 // 
 // maybe splinter into static and moving physics object class.
@@ -28,7 +29,7 @@ sf::Vector2f Distance;
 sf::Vector2f MaxPos;
 sf::Vector2f SamPos;
 sf::Vector2f StaticPos;
-float mass = 1000;
+float mass = 400;
 //Print Something on the Concole
 void print_Someting(std::string text) 
 {
@@ -69,17 +70,20 @@ bool RunGUI(tgui::GuiBase& gui)
 int main()
 {
     Velocity.x = 1;
+    Velocity.y = -0.5;
 
     sf::RenderWindow window{ {800, 600}, "TGUI window with SFML" };
     window.setKeyRepeatEnabled(false);
     //A Gui Object that works with Sfml window. 
     tgui::GuiSFML gui{ window };
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(600);
     sf::CircleShape Sam(50.f);
-    sf::CircleShape Max(50.f);
-    sf::CircleShape Static(50.f);
+    sf::CircleShape Max(10.f);
+    sf::CircleShape Static(10.f);
+    StaticCircle testi(200);
     //Static.setPosition(250, 250);
     Static.setPosition(250, 250);
+    Max.setPosition(80, 80);
     Max.setFillColor(sf::Color(100, 25, 50));
     Static.setFillColor(sf::Color(155,0,0));
     RunGUI(gui);
@@ -194,32 +198,17 @@ int main()
         window.clear();
         //gui.draw();
         window.draw(Max);
-        window.draw(Sam);
+       // window.draw(Sam);
+        testi.Render(window,);
         window.draw(Static);
         x = x + 0.01;
         std::cout << Velocity.x;
-        std::cout << Velocity.y;
+        std::cout << "  ", Velocity.y;
         std::cout << "Accel ", Acceleration.x;
         std::cout << Acceleration.y;
         std::cout << "posi  ", MaxPos.x;
         std::cout << " ";
         std::cout << MaxPos.y << std::endl;
         window.display();
-        if (Acceleration.y > 0.5)
-        {
-            Acceleration.y = 0.5;
-        }
-        if (Acceleration.y < -0.5)
-        {
-            Acceleration.y = -0.5;
-        }
-        if (Acceleration.x > 0.5)
-        {
-            Acceleration.x = 0.5;
-        }
-        if (Acceleration.x < -0.5)
-        {
-            Acceleration.x = -0.5;
-        }
     }
 }

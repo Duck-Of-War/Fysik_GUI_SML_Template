@@ -10,12 +10,12 @@ Object::Object()
 	init();
 }
 
-void Object::Render(sf::RenderWindow WIN, sf::CircleShape * CIRC, sf::RectangleShape * RECT)
+void Object::Render(sf::RenderWindow WIN, sf::CircleShape * Circle, sf::RectangleShape * RECT)
 {
 
-	if (CIRC != 0)
+	if (Circle != 0)
 	{
-		WIN.draw(*CIRC);
+		WIN.draw(*Circle);
 	}
 	else if (RECT != 0)
 	{

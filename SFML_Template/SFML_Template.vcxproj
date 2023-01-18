@@ -135,11 +135,13 @@
     <ClCompile Include="CircleObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="StaticCircle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CircleObject.h" />
     <ClInclude Include="Mass_Object.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="StaticCircle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
