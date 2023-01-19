@@ -199,7 +199,7 @@ int main()
         //gui.draw();
         window.draw(Max);
        // window.draw(Sam);
-        testi.Render(window,);
+        testi.Render(window);
         window.draw(Static);
         x = x + 0.01;
         std::cout << Velocity.x;

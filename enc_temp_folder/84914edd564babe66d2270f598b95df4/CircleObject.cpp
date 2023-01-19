@@ -4,7 +4,7 @@ void CircleObject::init()
 {
 
 	sf::CircleShape Circle(Size);
-	m_Base = &Circle;
+	m_BaseP = &Circle;
 	if (is_red == true)
 	{
 		Circle.setFillColor(sf::Color(155,0,0));

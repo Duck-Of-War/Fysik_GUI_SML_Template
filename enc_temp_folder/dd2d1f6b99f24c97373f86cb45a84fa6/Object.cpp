@@ -8,6 +8,7 @@ void Object::init()
 
 Object::Object()
 {
+	m_Base = m_BaseP;
 	init();
 }
 

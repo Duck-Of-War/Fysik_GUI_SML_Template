@@ -11,3 +11,6 @@ class CircleObject:
     void init();
    // sf::CircleShape  = Circle(Size);
     CircleObject();
+    CircleObject(sf::CircleShape Circle);
+};
+
