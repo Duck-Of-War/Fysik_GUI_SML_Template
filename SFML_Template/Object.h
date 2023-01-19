@@ -7,7 +7,7 @@ class Object
 public:
 	sf::Vector2f Position;
 
-	sf::Shape *m_Base;
+	sf::Shape * m_Base;
 	float mass = 0.0;
 	void init();
 	Object();

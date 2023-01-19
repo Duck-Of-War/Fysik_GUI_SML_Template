@@ -26,6 +26,6 @@ void Object::GetPosition()
 
 void Object::SetPosition()
 {
-	m_Base->getPosition();
+	Position = m_Base->getPosition();
 	return;
 }

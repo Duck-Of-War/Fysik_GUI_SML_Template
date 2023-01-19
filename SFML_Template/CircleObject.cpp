@@ -2,8 +2,8 @@
 
 void CircleObject::init()
 {
-
-	sf::CircleShape Circle(Size);
+	Circle.setRadius(Size);
+	
 	m_Base = &Circle;
 	if (is_red == true)
 	{

@@ -29,6 +29,7 @@ sf::Vector2f Distance;
 sf::Vector2f MaxPos;
 sf::Vector2f SamPos;
 sf::Vector2f StaticPos;
+sf::Vector2f TestiPos;
 float mass = 400;
 //Print Something on the Concole
 void print_Someting(std::string text) 
@@ -76,7 +77,7 @@ int main()
     window.setKeyRepeatEnabled(false);
     //A Gui Object that works with Sfml window. 
     tgui::GuiSFML gui{ window };
-    window.setFramerateLimit(600);
+    window.setFramerateLimit(60);
     sf::CircleShape Sam(50.f);
     sf::CircleShape Max(10.f);
     sf::CircleShape Static(10.f);
@@ -160,6 +161,7 @@ int main()
         MaxPos = Max.getPosition();
         SamPos = Sam.getPosition();
         StaticPos = Static.getPosition();
+        testi.GetPosition();
         Sam.setFillColor(sf::Color(122*sin(x)+122, 122 * sin(2*x) + 122, 122 * sin(0.5*x) + 122));
         //Max.move(0.01 * (SamPos.x - MaxPos.x), 0.01 * (SamPos.y - MaxPos.y));
 
