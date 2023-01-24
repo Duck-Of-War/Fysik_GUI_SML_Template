@@ -9,10 +9,11 @@ public:
 
 	sf::Shape * m_Base;
 	float mass = 0.0;
+	float mdiv = 15;
 	void init();
 	Object();
 	void Render(sf::RenderWindow & WIN);
 	void GetPosition();
-	void SetPosition();
+	void SetPosition(sf::Vector2f & POS);
 };
 

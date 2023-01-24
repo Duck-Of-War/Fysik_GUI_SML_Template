@@ -5,33 +5,20 @@
 #include <math.h>
 #include <cmath>
 #include "StaticCircle.h"
+#include "MovingCircle.h"
 
 //To do:
-// FIX RENDER FOR STATIC CIRCLE
-// make into physics object class and splinter into circle and square???
-// 
-// maybe splinter into static and moving physics object class.
-//
-//Variables
-bool A_Pressed = false;
-bool D_Pressed = false;
-bool W_Pressed = false;
-bool S_Pressed = false;
-float x;
-float y;
-float FDistance;
-float a2;
-float b2;
 
-sf::Vector2f Velocity;
-sf::Vector2f Acceleration;
-sf::Vector2f Distance;
-sf::Vector2f MaxPos;
-sf::Vector2f SamPos;
-sf::Vector2f StaticPos;
-sf::Vector2f TestiPos;
-float mass = 400;
-//Print Something on the Concole
+
+//Variables
+
+
+
+sf::Vector2f Testmovepos(750,750);
+sf::Vector2f MoveaPos(250,250);
+sf::Vector2f TestiPos(500,500);
+
+//Print Something on the Console
 void print_Someting(std::string text) 
 {
     std::cout << text;
@@ -70,23 +57,25 @@ bool RunGUI(tgui::GuiBase& gui)
 //main entry
 int main()
 {
-    Velocity.x = 1;
-    Velocity.y = -0.5;
 
-    sf::RenderWindow window{ {800, 600}, "TGUI window with SFML" };
+    sf::RenderWindow window{ {1000, 1000}, "TGUI window with SFML" };
     window.setKeyRepeatEnabled(false);
     //A Gui Object that works with Sfml window. 
     tgui::GuiSFML gui{ window };
     window.setFramerateLimit(60);
-    sf::CircleShape Sam(50.f);
-    sf::CircleShape Max(10.f);
-    sf::CircleShape Static(10.f);
-    StaticCircle testi(200);
-    //Static.setPosition(250, 250);
-    Static.setPosition(250, 250);
-    Max.setPosition(80, 80);
-    Max.setFillColor(sf::Color(100, 25, 50));
-    Static.setFillColor(sf::Color(155,0,0));
+    sf::RectangleShape BG(sf::Vector2f(2000, 2000));
+    BG.setFillColor(sf::Color(156,173,206));
+
+
+    StaticCircle teststatic(50);
+    MovingCircle testmoving(800,-1.4,0.3);
+    MovingCircle Movea(350,0.5,-0.5);
+
+    sf::Vector2f TestiPos(500 - teststatic.Size, 500 - teststatic.Size);
+
+    teststatic.SetPosition(TestiPos);
+    Movea.SetPosition(MoveaPos);
+    testmoving.SetPosition(Testmovepos);
     RunGUI(gui);
 
 
@@ -101,116 +90,20 @@ int main()
             {
             case sf::Event::Closed:
                 window.close();
-            case sf::Event::KeyPressed:
-                switch (event.key.code)
-                {
-                case sf::Keyboard::A:
-                    A_Pressed = true;
-                    break;
-                case sf::Keyboard::D:
-                    D_Pressed = true;
-                    break;
-                case sf::Keyboard::W:
-                    W_Pressed = true;
-                    break;
-                case sf::Keyboard::S:
-                    S_Pressed = true;
-                    break;
-                default:
-                    break;
-                }
-                break;
-            case sf::Event::KeyReleased:
-                switch (event.key.code)
-                {
-                case sf::Keyboard::A:
-                    A_Pressed = false;
-                    break;
-                case sf::Keyboard::D:
-                    D_Pressed = false;
-                    break;
-                case sf::Keyboard::W:
-                    W_Pressed = false;
-                    break;
-                case sf::Keyboard::S:
-                    S_Pressed = false;
-                    break;
-                default:
-                    break;
-                }
+
             }
         }
-        if (D_Pressed == true)
-        {
-            Sam.move(0.5, 0);
-        }
-        if (A_Pressed == true)
-        {
-            Sam.move(-0.5, 0);
-        }
-        if (W_Pressed == true)
-        {
-            Sam.move(0, -0.5);
 
-        }
-        if (S_Pressed == true)
-        {
-            Sam.move(0, 0.5);
-        }
+
+        teststatic.GetPosition();
         
-        MaxPos = Max.getPosition();
-        SamPos = Sam.getPosition();
-        StaticPos = Static.getPosition();
-        testi.GetPosition();
-        Sam.setFillColor(sf::Color(122*sin(x)+122, 122 * sin(2*x) + 122, 122 * sin(0.5*x) + 122));
-        //Max.move(0.01 * (SamPos.x - MaxPos.x), 0.01 * (SamPos.y - MaxPos.y));
 
-        a2 = pow(fabs(StaticPos.x - MaxPos.x), 2);
-        b2 = pow(fabs(StaticPos.y - MaxPos.y), 2);
-        FDistance = sqrt(a2 + b2);
-
-        Distance.y = StaticPos.y - MaxPos.y;
-        Distance.x = StaticPos.x - MaxPos.x;
-        if (Distance.x >= 0)
-        {
-            Acceleration.x = mass / pow(FDistance, 2);
-
-        }
-        else
-        {
-            Acceleration.x = mass / pow(FDistance, 2) * -1;
-
-        }
-        if (Distance.y >= 0)
-        {
-            Acceleration.y = mass / pow(FDistance, 2);
-
-        }
-        else
-        {
-            Acceleration.y = mass / pow(FDistance, 2) * -1;
-
-        }
-
-
-
-        Velocity += Acceleration;
-        Max.move(Velocity);
-        //std::cout << SamPos.x << std::endl;
         window.clear();
         //gui.draw();
-        window.draw(Max);
-       // window.draw(Sam);
-        testi.Render(window);
-        window.draw(Static);
-        x = x + 0.01;
-        std::cout << Velocity.x;
-        std::cout << "  ", Velocity.y;
-        std::cout << "Accel ", Acceleration.x;
-        std::cout << Acceleration.y;
-        std::cout << "posi  ", MaxPos.x;
-        std::cout << " ";
-        std::cout << MaxPos.y << std::endl;
+        window.draw(BG);
+        teststatic.Render(window);
+        testmoving.Update(window, teststatic.Circle);
+        Movea.Update(window, teststatic.Circle);
         window.display();
     }
 }

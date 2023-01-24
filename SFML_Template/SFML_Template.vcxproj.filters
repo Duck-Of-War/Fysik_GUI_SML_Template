@@ -27,6 +27,9 @@
     <ClCompile Include="StaticCircle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MovingCircle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mass_Object.h">
@@ -39,6 +42,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StaticCircle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MovingCircle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

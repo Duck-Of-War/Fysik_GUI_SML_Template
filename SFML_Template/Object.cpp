@@ -19,13 +19,13 @@ void Object::Render(sf::RenderWindow & WIN)
 void Object::GetPosition()
 {
 
-		m_Base->getPosition();
+		Position = m_Base->getPosition();
 		return;
 
 }
 
-void Object::SetPosition()
+void Object::SetPosition(sf::Vector2f &POS)
 {
-	Position = m_Base->getPosition();
+	m_Base->setPosition(POS);
 	return;
 }

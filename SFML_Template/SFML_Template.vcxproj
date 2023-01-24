@@ -134,12 +134,14 @@
   <ItemGroup>
     <ClCompile Include="CircleObject.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MovingCircle.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="StaticCircle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CircleObject.h" />
     <ClInclude Include="Mass_Object.h" />
+    <ClInclude Include="MovingCircle.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="StaticCircle.h" />
   </ItemGroup>
