@@ -12,11 +12,13 @@ void MovingCircle::init(int m,float vx, float vy)
 void MovingCircle::Update(sf::RenderWindow & WIN,sf::Shape & Static)
 {
     GetPosition();
+    //The circle we want to accelerate towards.
     StaticPos = Static.getPosition();
 	Render(WIN);
 	Circle.move(Velocity);
 	Velocity += Acceleration;
-    //The math:
+
+    //The math for figuring out acceleration:
     a2 = pow(fabs(StaticPos.x - Position.x), 2);
     b2 = pow(fabs(StaticPos.y - Position.y), 2);
     FDistance = sqrt(a2 + b2);

@@ -1,5 +1,7 @@
 #include "StaticCircle.h"
 
+
+//Sets all parameters for static circle
 void StaticCircle::init(int m)
 {
 	mass = m;
