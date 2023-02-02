@@ -6,7 +6,7 @@ void MovingCircle::init(int m,float vx, float vy)
     Velocity = sf::Vector2f(vx,vy);
     mass = m;
     Size = mass/mdiv;
-    Circle.setRadius(Size);
+    CircleP->setRadius(Size);
 }
 
 void MovingCircle::Update(sf::RenderWindow & WIN,sf::Shape & Static)
@@ -15,7 +15,7 @@ void MovingCircle::Update(sf::RenderWindow & WIN,sf::Shape & Static)
     //The circle we want to accelerate towards.
     StaticPos = Static.getPosition();
 	Render(WIN);
-	Circle.move(Velocity);
+	CircleP->move(Velocity);
 	Velocity += Acceleration;
 
     //The math for figuring out acceleration:

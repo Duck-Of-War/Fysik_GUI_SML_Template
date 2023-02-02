@@ -1,18 +1,25 @@
 #include "CircleObject.h"
 
+sf::Shape* CircleObject::get_shape()
+{
+	CircleP = &Circle;
+	return CircleP;
+}
+
 void CircleObject::init()
 {
-	Circle.setRadius(Size);
+	get_shape();
+	CircleP->setRadius(Size);
 	
 	m_Base = &Circle;
 	if (is_red == true)
 	{
-		Circle.setFillColor(sf::Color(155,0,0));
+		CircleP->setFillColor(sf::Color(155,0,0));
 
 	}
 	else
 	{
-		Circle.setFillColor(sf::Color(0,0,155));
+		CircleP->setFillColor(sf::Color(0,0,155));
 	}
 
 }

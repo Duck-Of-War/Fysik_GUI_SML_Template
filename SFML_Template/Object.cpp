@@ -1,8 +1,15 @@
 #include "Object.h"
 
 
+sf::Shape* Object::get_shape()
+{
+	return Temprect;
+
+}
+
 Object::Object()
 {
+	m_Base = get_shape();
 }
 
 //Renders the object in an sfml renderwindow

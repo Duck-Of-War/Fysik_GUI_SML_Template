@@ -13,7 +13,7 @@
 //an exception is thrown at the movingcircle.cpp Circle.move(Velocity) function
 
 //Variables
-float mass = 200;
+float mass = 400;
 
 float Size = mass / 15;
 
@@ -23,6 +23,7 @@ sf::Vector2f MoveaPos(250,250);
 sf::Vector2f TestiPos(500,500);
 sf::Vector2i Mosi(2,2);
 sf::Vector2f mousePositionFloat(0,0);
+sf::Vector2f Cursorpos;
 
 //Whether or not i want the translucent circle to follow the mouse.
 bool trackCursor = true;
@@ -38,19 +39,21 @@ std::vector<MovingCircle> MovingVector;
 //Creates a movingcircle and inserts it into the vector
 void CreateMovingCircle()
 {
-
+    Cursorpos = sf::Vector2f(Cursorpos.x - 25, Cursorpos.y - 25);
     MovingCircle Circ(500, 0, 0);
-    Circ.SetPosition(MoveaPos);
+    Circ.SetPosition(Cursorpos);
     MovingVector.push_back(Circ);
+    trackCursor = true;
 }
 
 //makes a testing circle
 void testero()
 {
     sf::CircleShape Circ(50.f);
-    Circ.setPosition(sf::Vector2f(250+x,250));
+    Circ.setPosition(sf::Vector2f(Cursorpos.x - 25,Cursorpos.y - 25));
     x = x + 50;
     circleVector.push_back(Circ);
+    trackCursor = true;
 }
 
 //removes the testing circle
@@ -61,7 +64,7 @@ void testremove() {
         circleVector.pop_back();
         x = x - 50;
     }
-
+    trackCursor = true;
 }
 
 
@@ -174,6 +177,12 @@ int main()
             mousePositionFloat = static_cast<sf::Vector2f>(sf::Mouse::getPosition(window));
             mousePositionFloat.x = mousePositionFloat.x - Cursor.getRadius();
             mousePositionFloat.y = mousePositionFloat.y - Cursor.getRadius();
+        }
+
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
+            Cursorpos = mousePositionFloat;
+            trackCursor = false;
         }
 
         //Maybe I want to change the size in runtime??
