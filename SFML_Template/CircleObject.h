@@ -1,17 +1,13 @@
 #pragma once
 #include "Object.h"
 #include <TGUI/TGUI.hpp>
-
+// originally supposed to be where the object is defined as a circle, however that function was dropped and it is unnecessary to drop this class.
 class CircleObject :
     public Object
 {
 public:
-    sf::Shape* get_shape();
+    //Default size
     int Size = 50;
-    bool is_red = false;
+
     void init();
-    // sf::CircleShape  = Circle(Size);
-    CircleObject();
-    sf::CircleShape Circle;
-    sf::CircleShape* CircleP;
-};
+    CircleObject();};

@@ -6,9 +6,8 @@ void StaticCircle::init(int m)
 {
 	mass = m;
 	Size = mass;
-	is_red = true;
-	Circle.setFillColor(sf::Color(155, 0, 0));
 	Circle.setRadius(Size);
+	Circle.setFillColor(sf::Color(207, 191, 178));
 }
 
 StaticCircle::StaticCircle(int m)

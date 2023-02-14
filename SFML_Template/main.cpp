@@ -8,27 +8,21 @@
 #include "MovingCircle.h"
 #include <vector>
 
-//To do:
-//When clicking the button which creates and renders a moving circle,
-//an exception is thrown at the movingcircle.cpp Circle.move(Velocity) function
 
 //Variables
 float mass = 400;
-
 float Size = mass / 15;
 
 //position values
-sf::Vector2f Testmovepos(750,750);
-sf::Vector2f MoveaPos(250,250);
-sf::Vector2f TestiPos(500,500);
-sf::Vector2i Mosi(2,2);
+sf::Vector2f StaticPos(500,500);
 sf::Vector2f mousePositionFloat(0,0);
 sf::Vector2f Cursorpos;
 
+//pointer to the staticcircle
+StaticCircle* PS;
+
 //Whether or not i want the translucent circle to follow the mouse.
 bool trackCursor = true;
-
-float x = 0;
 
 //Vector for testcircles
 std::vector<sf::CircleShape> circleVector;
@@ -37,58 +31,76 @@ std::vector<sf::CircleShape> circleVector;
 std::vector<MovingCircle> MovingVector;
 
 //Creates a movingcircle and inserts it into the vector
-void CreateMovingCircle()
+//TBX, TBY and TBM are the editboxes for velocity and mass.
+void CreateMovingCircle(tgui::EditBox::Ptr TBX, tgui::EditBox::Ptr TBY, tgui::EditBox::Ptr TBM)
 {
-    Cursorpos = sf::Vector2f(Cursorpos.x - 25, Cursorpos.y - 25);
-    MovingCircle Circ(500, 0, 0);
-    Circ.SetPosition(Cursorpos);
-    MovingVector.push_back(Circ);
-    trackCursor = true;
-}
 
-//makes a testing circle
-void testero()
-{
-    sf::CircleShape Circ(50.f);
-    Circ.setPosition(sf::Vector2f(Cursorpos.x - 25,Cursorpos.y - 25));
-    x = x + 50;
-    circleVector.push_back(Circ);
-    trackCursor = true;
-}
+    //fetch the string from the editboxes and convert them into respective number variables.
+    tgui::String Xstring = TBX->getText();
+    tgui::String Ystring = TBY->getText();
+    tgui::String Mstring = TBM->getText();
 
-//removes the testing circle
-void testremove() {
+    float XFloat = Xstring.toFloat();
+    float YFloat = Ystring.toFloat();
+    int MInt = Mstring.toInt();
 
-    if (circleVector.empty() == false)
+    //changes the input to make it more understandable for user.
+    //e.g I reverse the Y variable simply because to the average user, it makes sense that a positive y value means "up"
+    //e.g2 i multiply and divide by 10 to avoid users having to use decimal (in the case of mass not even possible)
+    MInt = MInt * 10;
+    XFloat = XFloat / 10;
+    YFloat = -1 * YFloat / 10;
+
+    //Mass defaults to 500 if there is no value, or ig 0. I am scared the program will brick if it tries to divide by 0, so I play it safe
+    if (MInt <= 0)
     {
-        circleVector.pop_back();
-        x = x - 50;
+        MInt = 500;
     }
+    MovingCircle Circ(MInt, XFloat, YFloat);
+    Circ.SetPosition(Cursorpos);
+    //puts the object in my vector
+    MovingVector.push_back(Circ);
+    
+    //we dont want to lock the cursor when the user clicks a button
     trackCursor = true;
 }
 
-
-//Create a Button and call Createmovingcircle
-void MakeButton (std::string ButtonText,tgui::GuiBase& gui)
+//removes the latest circle added to the vector
+void RemoveMovingCircle()
 {
-    auto button = tgui::Button::create(ButtonText);
-    button->setSize({ "50%", "16.67%" });
-    button->setPosition({ "25%", "70%" });
-    gui.add(button);
-
-    button->onPress(CreateMovingCircle);
-   
+    //prevents trying to pop back nothing, which crashes the program
+    if (MovingVector.empty() == false)
+    {
+            MovingVector.pop_back();
+    }
+    //we dont want to set the cursor when the user clicks a button
+    trackCursor = true;
 }
 
-//button to remove the moving circles, currently used to remove the "test" circles
-void MakeButton2(std::string ButtonText, tgui::GuiBase& gui)
+//resets everything
+void Reset(tgui::EditBox::Ptr TBX, tgui::EditBox::Ptr TBY, tgui::EditBox::Ptr TBM)
 {
-    auto button = tgui::Button::create(ButtonText);
-    button->setSize({ "10%", "10%" });
-    button->setPosition({ "25%", "10%" });
-    gui.add(button);
+    if (MovingVector.empty() == false)
+    {
+        MovingVector.clear();
+    }
+    PS->SetPosition(StaticPos);
+    TBX->setText("");
+    TBY->setText("");
+    TBM->setText("");
+    //we dont want to set the cursor when the user clicks a button
+    trackCursor = true;
+}
 
-    button->onPress(testremove);
+//sets the position of the staticcircle to the cursor location
+void SetStatic()
+{
+
+    Cursorpos = sf::Vector2f(Cursorpos.x - 25, Cursorpos.y - 25);
+    PS->SetPosition(Cursorpos);
+
+    //we dont want to set the cursor when the user clicks a button
+    trackCursor = true;
 
 }
 
@@ -98,8 +110,98 @@ bool RunGUI(tgui::GuiBase& gui)
 {
     try
     {
-        MakeButton("Add circle", gui);
-        MakeButton2("destroy circle", gui);
+        //There is likely a cleaner way to do this, but here is where the TGUI widgets are defined.
+
+        //Theme
+        tgui::Theme cooltheme{ "C:/Users/te20jl5/OneDrive - Curt Nicolin Gymnasiet AB/Dokument/GUI_SFML/TGUI-0.9/themes/BabyBlue.txt"};
+        //Tooltips
+        auto toolTipX = tgui::Label::create("Set starting velocity of X axis, Default = 0");
+        auto toolTipY = tgui::Label::create("Set starting velocity of Y axis, Default = 0");
+        auto toolTipM = tgui::Label::create("Set Mass of Object, Default = 50");
+        auto toolTip1 = tgui::Label::create("Add a physics objects with specified paramaters at cursor");
+        auto toolTip2 = tgui::Label::create("Move the static object to the cursor");
+        auto toolTip3 = tgui::Label::create("Remove last placed Object");
+        auto toolTip4 = tgui::Label::create("Reset everything");
+
+
+        toolTipX->setRenderer(cooltheme.getRenderer("Tooltip"));
+        toolTipY->setRenderer(cooltheme.getRenderer("Tooltip"));
+        toolTipM->setRenderer(cooltheme.getRenderer("Tooltip"));
+        toolTip1->setRenderer(cooltheme.getRenderer("Tooltip"));
+        toolTip2->setRenderer(cooltheme.getRenderer("Tooltip"));
+        toolTip3->setRenderer(cooltheme.getRenderer("Tooltip"));
+        toolTip4->setRenderer(cooltheme.getRenderer("Tooltip"));
+
+        //Textboxes
+        auto textbox = tgui::EditBox::create();
+        auto textbox2 = tgui::EditBox::create();
+        auto textboxM = tgui::EditBox::create();
+
+
+        textbox->setSize({ "5%","5%" });
+        textbox->setPosition({ "5%","62%" });
+        textbox->setDefaultText({ "X Vel" });
+        textbox->setRenderer(cooltheme.getRenderer("EditBox"));
+        textbox->setToolTip(toolTipX);
+
+        textbox2->setSize({ "5%","5%" });
+        textbox2->setPosition({ "5%","67%" });
+        textbox2->setDefaultText({ "Y Vel" });
+        textbox2->setRenderer(cooltheme.getRenderer("EditBox"));
+        textbox2->setToolTip(toolTipY);
+
+        textboxM->setSize({ "5%","5%" });
+        textboxM->setPosition({ "5%","72%" });
+        textboxM->setDefaultText({ "Mass" });
+        textboxM->setRenderer(cooltheme.getRenderer("EditBox"));
+        textboxM->setToolTip(toolTipM);
+
+        //Add Circle Button
+        auto button = tgui::Button::create("Add Object");
+        button->setSize({ "14%", "8%" });
+        button->setPosition({ "10%", "62%" });
+        button->onPress(CreateMovingCircle,textbox,textbox2,textboxM);
+        button->setRenderer(cooltheme.getRenderer("Button"));
+        button->setToolTip(toolTip1);
+
+
+        //Remove circle Button
+        auto button2 = tgui::Button::create("Remove Object");
+        button2->setSize({ "14%", "8%" });
+        button2->setPosition({ "70%", "62%" });
+        button2->onPress(RemoveMovingCircle);
+        button2->setRenderer(cooltheme.getRenderer("Button"));
+        button2->setToolTip(toolTip3);
+
+        //Remove all circle button
+        auto button3 = tgui::Button::create("Reset");
+        button3->setSize({ "14%", "8%" });
+        button3->setPosition({ "70%", "70%" });
+        button3->onPress(Reset, textbox, textbox2, textboxM);
+        button3->setRenderer(cooltheme.getRenderer("Button"));
+        button3->setToolTip(toolTip4);
+        
+        //set static
+        auto button4 = tgui::Button::create("Set Static Position");
+        button4->setSize({ "14%", "8%" });
+        button4->setPosition({ "10%", "70%" });
+        button4->onPress(SetStatic);
+        button4->setRenderer(cooltheme.getRenderer("Button"));
+        button4->setToolTip(toolTip2);
+
+
+        //gui add
+        gui.add(textbox);
+        gui.add(textbox2);
+        gui.add(textboxM);
+        gui.add(button);
+        gui.add(button2);
+        gui.add(button3);
+        gui.add(button4);
+
+       // MakeButton("Add Circle", gui);
+        //MakeButton2("Remove Circle", gui);
+        //MakeTextBox(gui);
         return true;
     }
     catch (const tgui::Exception& e)
@@ -114,12 +216,16 @@ bool RunGUI(tgui::GuiBase& gui)
 //main entry
 int main()
 {
-
+   
     sf::RenderWindow window{ {1000, 1000}, "TGUI window with SFML" };
     window.setKeyRepeatEnabled(false);
+
     //A Gui Object that works with Sfml window. 
     tgui::GuiSFML gui{ window };
 
+    //I set the frameratelimit to the refresh rate of the pc i am working on, I wanted to restrict the framerate so the math:
+    //which is based on frames, is consistant and doesn't use too much power.
+    //In other words, it's for stability.
     window.setFramerateLimit(60);
 
     //Background colour
@@ -131,21 +237,14 @@ int main()
     Cursor.setFillColor(sf::Color(0, 100, 100, 100));
 
     //The movingCircles in main, placed for testing purposes.
-    StaticCircle teststatic(50);
-    MovingCircle testmoving(800, -1.4, 0.3);
-    MovingCircle Movea(350, 0.5, -0.5);
-    Movea.SetPosition(MoveaPos);
-    testmoving.SetPosition(Testmovepos);
+    StaticCircle Static(50);
 
-    //testing if I can use a vector in the code, as opposed to runtime. (i cant, the circle stays still)
-    MovingCircle Circ(500, 0.3, -0.3);
-    Circ.SetPosition(MoveaPos);
-    MovingVector.push_back(Circ);
+    Cursor.setRadius(Size);
 
-    //I want "TestiPos" to be in the middle of the coordinate
-    sf::Vector2f TestiPos(500 - teststatic.Size, 500 - teststatic.Size);
-    teststatic.SetPosition(TestiPos);
-    
+    //I want the StaticCircle to be in the middle of the coordinates, not the corner
+    StaticPos = sf::Vector2f(500 - Static.Size, 500 - Static.Size);
+    Static.SetPosition(StaticPos);
+    PS = &Static;
 
 
     RunGUI(gui);
@@ -179,40 +278,31 @@ int main()
             mousePositionFloat.y = mousePositionFloat.y - Cursor.getRadius();
         }
 
+        //Locks the cursor to the point you pressed it to.
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
             Cursorpos = mousePositionFloat;
             trackCursor = false;
         }
 
-        //Maybe I want to change the size in runtime??
-        Cursor.setRadius(Size);
-
 
         window.clear();
+
+        //Renders everything in the order you want.
         window.draw(BG);
-        teststatic.Render(window);
-        testmoving.Update(window, teststatic.Circle);
-        Movea.Update(window, teststatic.Circle);
-
-        //Try to call MovingCircle::Update on every MovingCircle in the vector, does NOT work
-        for (size_t i = 0; i < MovingVector.size(); i++)
-        {
-            MovingVector[i].Update(window, teststatic.Circle);
-        }
-
-        //Moves and draws all testcircles in their vector, works
-        for (size_t i = 0; i < circleVector.size(); i++)
-        {
-            circleVector[i].move(sf::Vector2f(2,2));
-            window.draw(circleVector[i]);
-        }
-
+        window.draw(Cursor);
 
         gui.draw();
-        window.draw(Cursor);
+       
+        //Try to call MovingCircle::Update on every MovingCircle in the vector
+        for (size_t i = 0; i < MovingVector.size(); i++)
+        {
+            MovingVector[i].Update(window,Static.Circle);
+        }
+        
+        Static.Render(window);
+
         window.display();
-        //std::cout << mousePositionFloat.x << std::endl;
     }
 
 

@@ -4,15 +4,22 @@ class Object
 {
 	//Abstracted root class for my physicsobjects.
 public:
+
 	sf::Vector2f Position;
-	sf::Shape* Temprect;
-	virtual sf::Shape* get_shape();
-	sf::Shape * m_Base;
-	sf::RenderWindow* winp;
+	
+	sf::CircleShape Circle;
+
+//mass and what to divide it by for size
 	float mass = 0.0;
-	float mdiv = 15;
+	float mdiv = 15
+		
+		;
 	Object();
-	void Render(sf::RenderWindow & WIN);
+
+	//Draws the shape in the sfml window
+	void Render(sf::RenderWindow &WIN);
+
+	//selfexplanatory
 	void GetPosition();
 	void SetPosition(sf::Vector2f & POS);
 };
