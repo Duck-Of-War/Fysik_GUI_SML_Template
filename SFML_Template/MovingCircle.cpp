@@ -1,12 +1,13 @@
 #include "MovingCircle.h"
 #include <math.h>
 #include <cmath>
-void MovingCircle::init(int m,float vx, float vy)
+void MovingCircle::init(int m,float vx, float vy, bool color)
 {
     Velocity = sf::Vector2f(vx,vy);
     mass = m;
     Size = mass/mdiv;
     Circle.setRadius(Size);
+    c = color;
 }
 
 void MovingCircle::Update(sf::RenderWindow & WIN,sf::Shape & Static)
@@ -52,9 +53,30 @@ void MovingCircle::Update(sf::RenderWindow & WIN,sf::Shape & Static)
         Acceleration.y = mass / pow(FDistance, 2) * -1;
 
     }
+    // updates the colour so the circle changes colour depending on how it moves in which direction.
+    if (c == true)
+    {
+        velf = ((fabs(Velocity.x) + fabs(Velocity.y)) / 2) * 70;
+        vely = fabs(Velocity.y) * 70;
+        velx = fabs(Velocity.x) * 70;
+        if (velx >= 255)
+        {
+            velx = 255;
+        }
+        if (vely >= 255)
+        {
+            vely = 255;
+        }
+        if (velf >= 255)
+        {
+            velf = 255;
+        }
+
+        Circle.setFillColor(sf::Color(velf, velx, vely));
+    }
 }
 
-MovingCircle::MovingCircle(int m, float vx, float vy)
+MovingCircle::MovingCircle(int m, float vx, float vy, bool color)
 {
-	init(m,vx,vy);
+	init(m,vx,vy, color);
 }

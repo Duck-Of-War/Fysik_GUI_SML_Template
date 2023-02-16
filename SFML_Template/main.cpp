@@ -24,6 +24,8 @@ StaticCircle* PS;
 //Whether or not i want the translucent circle to follow the mouse.
 bool trackCursor = true;
 
+bool c = false;
+
 //Vector for testcircles
 std::vector<sf::CircleShape> circleVector;
 
@@ -56,7 +58,7 @@ void CreateMovingCircle(tgui::EditBox::Ptr TBX, tgui::EditBox::Ptr TBY, tgui::Ed
     {
         MInt = 500;
     }
-    MovingCircle Circ(MInt, XFloat, YFloat);
+    MovingCircle Circ(MInt, XFloat, YFloat,c);
     Circ.SetPosition(Cursorpos);
     //puts the object in my vector
     MovingVector.push_back(Circ);
@@ -104,6 +106,27 @@ void SetStatic()
 
 }
 
+//Enables And Disables if the movingcircles change colour depending on velocity, depending on the bool b.
+void SetColor(bool b)
+{
+    if ( b == true)
+    {
+        for (size_t i = 0; i < MovingVector.size(); i++)
+        {
+            c = true;
+            MovingVector[i].c = true;
+        }
+    }
+    else
+    {
+        for (size_t i = 0; i < MovingVector.size(); i++)
+        {
+            c = false;
+            MovingVector[i].c = false;
+            MovingVector[i].Circle.setFillColor(sf::Color(207, 199, 136));
+        }
+    }
+}
 
 //For a easy debugging will show if a file counld not be opened in the console.
 bool RunGUI(tgui::GuiBase& gui)
@@ -113,7 +136,9 @@ bool RunGUI(tgui::GuiBase& gui)
         //There is likely a cleaner way to do this, but here is where the TGUI widgets are defined.
 
         //Theme
-        tgui::Theme cooltheme{ "C:/Users/te20jl5/OneDrive - Curt Nicolin Gymnasiet AB/Dokument/GUI_SFML/TGUI-0.9/themes/BabyBlue.txt"};
+       // tgui::Theme cooltheme{"BabyBlue.txt"}; 
+       // Label
+        auto label = tgui::Label::create("Show Velocity");
         //Tooltips
         auto toolTipX = tgui::Label::create("Set starting velocity of X axis, Default = 0");
         auto toolTipY = tgui::Label::create("Set starting velocity of Y axis, Default = 0");
@@ -122,15 +147,16 @@ bool RunGUI(tgui::GuiBase& gui)
         auto toolTip2 = tgui::Label::create("Move the static object to the cursor");
         auto toolTip3 = tgui::Label::create("Remove last placed Object");
         auto toolTip4 = tgui::Label::create("Reset everything");
+        auto toolTip5 = tgui::Label::create("Makes color of objects determined by direction and velocity");
 
 
-        toolTipX->setRenderer(cooltheme.getRenderer("Tooltip"));
-        toolTipY->setRenderer(cooltheme.getRenderer("Tooltip"));
-        toolTipM->setRenderer(cooltheme.getRenderer("Tooltip"));
-        toolTip1->setRenderer(cooltheme.getRenderer("Tooltip"));
-        toolTip2->setRenderer(cooltheme.getRenderer("Tooltip"));
-        toolTip3->setRenderer(cooltheme.getRenderer("Tooltip"));
-        toolTip4->setRenderer(cooltheme.getRenderer("Tooltip"));
+      //  toolTipX->setRenderer(cooltheme.getRenderer("Tooltip"));
+        //toolTipY->setRenderer(cooltheme.getRenderer("Tooltip"));
+        //toolTipM->setRenderer(cooltheme.getRenderer("Tooltip"));
+        //toolTip1->setRenderer(cooltheme.getRenderer("Tooltip"));
+      //  toolTip2->setRenderer(cooltheme.getRenderer("Tooltip"));
+        //toolTip3->setRenderer(cooltheme.getRenderer("Tooltip"));
+        //toolTip4->setRenderer(cooltheme.getRenderer("Tooltip"));
 
         //Textboxes
         auto textbox = tgui::EditBox::create();
@@ -141,19 +167,19 @@ bool RunGUI(tgui::GuiBase& gui)
         textbox->setSize({ "5%","5%" });
         textbox->setPosition({ "5%","62%" });
         textbox->setDefaultText({ "X Vel" });
-        textbox->setRenderer(cooltheme.getRenderer("EditBox"));
+       // textbox->setRenderer(cooltheme.getRenderer("EditBox"));
         textbox->setToolTip(toolTipX);
 
         textbox2->setSize({ "5%","5%" });
         textbox2->setPosition({ "5%","67%" });
         textbox2->setDefaultText({ "Y Vel" });
-        textbox2->setRenderer(cooltheme.getRenderer("EditBox"));
+     //   textbox2->setRenderer(cooltheme.getRenderer("EditBox"));
         textbox2->setToolTip(toolTipY);
 
         textboxM->setSize({ "5%","5%" });
         textboxM->setPosition({ "5%","72%" });
         textboxM->setDefaultText({ "Mass" });
-        textboxM->setRenderer(cooltheme.getRenderer("EditBox"));
+   //     textboxM->setRenderer(cooltheme.getRenderer("EditBox"));
         textboxM->setToolTip(toolTipM);
 
         //Add Circle Button
@@ -161,7 +187,7 @@ bool RunGUI(tgui::GuiBase& gui)
         button->setSize({ "14%", "8%" });
         button->setPosition({ "10%", "62%" });
         button->onPress(CreateMovingCircle,textbox,textbox2,textboxM);
-        button->setRenderer(cooltheme.getRenderer("Button"));
+      //  button->setRenderer(cooltheme.getRenderer("Button"));
         button->setToolTip(toolTip1);
 
 
@@ -170,7 +196,7 @@ bool RunGUI(tgui::GuiBase& gui)
         button2->setSize({ "14%", "8%" });
         button2->setPosition({ "70%", "62%" });
         button2->onPress(RemoveMovingCircle);
-        button2->setRenderer(cooltheme.getRenderer("Button"));
+     //   button2->setRenderer(cooltheme.getRenderer("Button"));
         button2->setToolTip(toolTip3);
 
         //Remove all circle button
@@ -178,7 +204,7 @@ bool RunGUI(tgui::GuiBase& gui)
         button3->setSize({ "14%", "8%" });
         button3->setPosition({ "70%", "70%" });
         button3->onPress(Reset, textbox, textbox2, textboxM);
-        button3->setRenderer(cooltheme.getRenderer("Button"));
+     //   button3->setRenderer(cooltheme.getRenderer("Button"));
         button3->setToolTip(toolTip4);
         
         //set static
@@ -186,9 +212,16 @@ bool RunGUI(tgui::GuiBase& gui)
         button4->setSize({ "14%", "8%" });
         button4->setPosition({ "10%", "70%" });
         button4->onPress(SetStatic);
-        button4->setRenderer(cooltheme.getRenderer("Button"));
+      //  button4->setRenderer(cooltheme.getRenderer("Button"));
         button4->setToolTip(toolTip2);
 
+        auto cBox = tgui::CheckBox::create();
+        cBox->onCheck(SetColor,true);
+        cBox->onUncheck(SetColor,false);
+        cBox->setSize({ "5%","5%" });
+        cBox->setPosition({ "70%","57%" });
+        cBox->setToolTip(toolTip5);
+        label->setPosition({ "75%","57%" });
 
         //gui add
         gui.add(textbox);
@@ -198,6 +231,8 @@ bool RunGUI(tgui::GuiBase& gui)
         gui.add(button2);
         gui.add(button3);
         gui.add(button4);
+        gui.add(cBox);
+        gui.add(label);
 
        // MakeButton("Add Circle", gui);
         //MakeButton2("Remove Circle", gui);
